@@ -16,7 +16,11 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
 
         // Perform POST request to your API
         try {
-            const response = await axios.post('http://localhost:8080/scan_code', {
+            // const response = await axios.post('http://localhost:8080/scan_code', {
+            //     source_code: sourceCode
+            // });
+
+            const response = await axios.post('http://3.108.126.225:8080/scan_code', {
                 source_code: sourceCode
             });
 
@@ -42,7 +46,6 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
             panel.webview.html = findingsTable;
             panel2.webview.html = findingsTable2;
 
-
         } catch (error) {
             vscode.window.showErrorMessage(`Error scanning code: ${error}`);
         }
@@ -50,6 +53,14 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
         vscode.window.showErrorMessage('No active editor found.');
     }
 };
+
+function exportFindingsToJSON(findings: any) {
+    const data = JSON.stringify(findings, null, 2);
+    const filePath = vscode.workspace.rootPath + '/findings.json';
+    require('fs').writeFileSync(filePath, data);
+    vscode.window.showInformationMessage('Findings exported to ' + filePath);
+}
+
 
 function generateReportHTML(findings: any) {
   let findingsTable = `
@@ -80,6 +91,9 @@ function generateReportHTML(findings: any) {
                     .priority .medium {
                         color: #ffa500;
                     }
+                    .priority .WARNING {
+                        color: #ffa500;
+                    }
                     .priority .high {
                         color: #ff4500;
                     }
@@ -93,11 +107,11 @@ function generateReportHTML(findings: any) {
                 <table>
                     <thead>
                         <tr>
-                            <th>Issue Summary</th>
                             <th>Issue Description</th>
                             <th>Priority</th>
+                            <th>CWE</th>
                             <th>Line Numbers</th>
-                            <th>Recommendations</th>
+                            <th>Vulnerable Code Lines</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,11 +120,10 @@ function generateReportHTML(findings: any) {
   for (let finding of findings) {
     findingsTable += `
                     <tr>
-                        <td>${finding.fileName}</td>
                         <td>${finding.issueDescription}</td>
                         <td class="priority"><span class="${finding.issuePriority}">${finding.issuePriority}</span></td>
                         <td>${finding.CWE}</td>
-                        <td>${finding.lineNumbers.join(', ')}</td>
+                        <td>${finding.lineNumbers}</td>
                         <td>${finding.vulnerableCodeLines}</td>
                     </tr>
                 `;
@@ -120,6 +133,7 @@ function generateReportHTML(findings: any) {
                     </tbody>
                 </table>
             `;
+
   return findingsTable;
 }
 
@@ -128,12 +142,11 @@ function generateReportHTMLVersion2(findings: any) {
   const findingsHtml = findings.map((finding: { fileName: any; issueDescription: any; issuePriority: any; CWE: any, lineNumbers: any[]; vulnerableCodeLines: any; }) => {
       return `
           <div class="finding">
-              <h2 class="summary">${finding.fileName}</h2>
               <p class="description">${finding.issueDescription}</p>
               <p class="priority">Priority: <span class="${finding.issuePriority}">${finding.issuePriority}</span></p>
-              <p class="description">${finding.CWE}</p>
-              <p class="lines">Affected Lines: ${finding.lineNumbers.join(', ')}</p>
-              <p class="recommendations">${finding.vulnerableCodeLines}</p>
+              <p class="description">CWE: ${finding.CWE}</p>
+              <p class="lines">Line Numbers: ${finding.lineNumbers}</p>
+              <p class="recommendations">Affected Lines: ${finding.vulnerableCodeLines}</p>
           </div>
       `;
   }).join('');
@@ -173,6 +186,11 @@ function generateReportHTMLVersion2(findings: any) {
                                 font-weight: bold;
                             }
 
+                            .priority .WARNING {
+                                color: #ffa500; /* Orange */
+                                font-weight: bold;
+                            }
+
                             .priority .high {
                                 color: #ff4500; /* Red-Orange */
                                 font-weight: bold;
@@ -198,6 +216,7 @@ function generateReportHTMLVersion2(findings: any) {
                     </body>
                 </html>
             `;
+
   return findingsTable;
 }
 
