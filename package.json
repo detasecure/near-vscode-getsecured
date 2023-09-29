@@ -34,6 +34,12 @@
         "enablement": "BOS.enabled"
       },
       {
+        "command": "near.scan_code",
+        "title": "Scan",
+        "category": "NEAR.discovery",
+        "enablement": "BOS.enabled"
+      },
+      {
         "command": "near.openWidgetsFromAccount",
         "title": "View account in workspace",
         "enablement": "BOS.enabled",
@@ -79,6 +85,11 @@
       {
         "view": "near-discovery",
         "contents": "[Login & Fetch Widgets](command:near.login)",
+        "when": "BOS.enabled"
+      },
+      {
+        "view": "near-discovery",
+        "contents": "[Scan Code](command:near.scan_code)",
         "when": "BOS.enabled"
       },
       {
@@ -144,12 +155,13 @@
     "glob": "^8.0.3",
     "mocha": "^10.1.0",
     "react-dom": "^18.2.0",
-    "typescript": "^4.9.3",
+    "react-scripts": "^5.0.1",
     "rewire": "^6.0.0",
-    "react-scripts": "^5.0.1"
+    "typescript": "^4.9.3"
   },
   "dependencies": {
     "@types/lodash": "^4.14.191",
+    "axios": "^1.5.0",
     "lodash": "^4.17.21",
     "near-api-js": "^1.1.0",
     "react": "^18.2.0"

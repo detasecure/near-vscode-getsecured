@@ -3,6 +3,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { openAccountWidgets } from "./commands/load";
 import { loginAccount } from "./commands/login";
+import { scanCode } from "./commands/scan";
 import { publishCode } from "./commands/publish";
 import { handleTransactionCallback } from "./commands/callbacks";
 import { WidgetPreviewPanel } from "./modules/preview-panel";
@@ -50,6 +51,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("near.login", () =>
       loginAccount(context, localWorkspace)
+    )
+  );
+
+  // Scan Code
+  context.subscriptions.push(
+    vscode.commands.registerCommand("near.scan_code", () =>
+      scanCode(context, localWorkspace)
     )
   );
 
