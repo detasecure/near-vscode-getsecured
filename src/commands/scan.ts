@@ -187,7 +187,7 @@ function generateReportHTMLVersion2(findings: any) {
                 <p class="description">${finding.issueDescription}</p>
                 <p class="priority">Priority: <span class="${finding.issuePriority}">${finding.issuePriority}</span></p>
                 <p class="description">CWE: <a href="${finding.CWE}">${finding.CWE}</a></p>
-                <p class="description">OWASP: <a href="${finding.CWE}">${finding.OWASP}</a></p>
+                <p class="description">OWASP: <a href="${finding.OWASP}">${finding.OWASP}</a></p>
                 <p class="lines">Line Numbers: ${finding.lineNumbers}</p>
                 <p class="recommendations">Affected Lines: ${finding.vulnerableCodeLines}</p>
                 <p class="recommendations">Recommendation: ${finding.recommendation}</p>
