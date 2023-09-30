@@ -24,7 +24,7 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
         const sourceCode = document.getText();
 
         // Get the document relative file path
-        const filePath = getFilePath(accountId, document.fileName)
+        const filePath = getFilePath(accountId, document.fileName);
         // vscode.window.showInformationMessage("FILE NAME - " + filePath);
 
         // Show loading message while scanning
@@ -37,8 +37,11 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
                 const serverURL = await getFromContext(localWorkspace, 'GETSecuredURL') || "http://localhost:8080/scan_code";
                 // vscode.window.showInformationMessage("serverURL - " + serverURL);
                 const response = await axios.post(serverURL, {
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     source_code: sourceCode,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     file_name: filePath,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     account_id: accountId
                 });
 
@@ -77,7 +80,7 @@ function getFilePath(accountId: string, fileName: string): string {
     const index = fileName.indexOf(accountId);
     if (index !== -1) {
         const pathAfterAccountId = fileName.substring(index + accountId.length);
-        return pathAfterAccountId
+        return pathAfterAccountId;
         // const pathParts = pathAfterAccountId.split('/');
         // return pathParts[pathParts.length - 1];
     }
@@ -175,6 +178,7 @@ function generateReportHTMLVersion2(findings: any) {
     
 
     // Generate styled HTML for findings
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const findingsHtml = findings.map((finding: { fileName: any; issueDescription: any; issuePriority: any; CWE: any, lineNumbers: any[]; vulnerableCodeLines: any; }) => {
         return `
             <div class="finding">
