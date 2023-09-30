@@ -112,7 +112,7 @@ function generateReportHTML(findings: any) {
                     //     background-color: #f2f2f2;
                     // }
                     tr:hover {
-                        background-color: grey;
+                        background-color: rgba(128, 128, 128, 0.5);
                     }
                     .priority {
                         color: white;
@@ -144,6 +144,7 @@ function generateReportHTML(findings: any) {
                             <th>CWE</th>
                             <th>Line Numbers</th>
                             <th>Vulnerable Code Lines</th>
+                            <th>Recommendation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -154,9 +155,10 @@ function generateReportHTML(findings: any) {
                     <tr>
                         <td>${finding.issueDescription}</td>
                         <td class="priority"><span class="${finding.issuePriority}">${finding.issuePriority}</span></td>
-                        <td>${finding.CWE}</td>
+                        <td><a href="${finding.CWE}">${finding.CWE}</a><br/><a href="${finding.OWASP}">${finding.OWASP}</a></td>
                         <td>${finding.lineNumbers}</td>
                         <td>${finding.vulnerableCodeLines}</td>
+                        <td>${finding.recommendation}</td>
                     </tr>
                 `;
   }
@@ -179,14 +181,16 @@ function generateReportHTMLVersion2(findings: any) {
 
     // Generate styled HTML for findings
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const findingsHtml = findings.map((finding: { fileName: any; issueDescription: any; issuePriority: any; CWE: any, lineNumbers: any[]; vulnerableCodeLines: any; }) => {
+    const findingsHtml = findings.map((finding: { fileName: any; issueDescription: any; issuePriority: any; CWE: any, OWASP: any, lineNumbers: any[]; vulnerableCodeLines: any; recommendation: any; }) => {
         return `
             <div class="finding">
                 <p class="description">${finding.issueDescription}</p>
                 <p class="priority">Priority: <span class="${finding.issuePriority}">${finding.issuePriority}</span></p>
-                <p class="description">CWE: ${finding.CWE}</p>
+                <p class="description">CWE: <a href="${finding.CWE}">${finding.CWE}</a></p>
+                <p class="description">OWASP: <a href="${finding.CWE}">${finding.OWASP}</a></p>
                 <p class="lines">Line Numbers: ${finding.lineNumbers}</p>
                 <p class="recommendations">Affected Lines: ${finding.vulnerableCodeLines}</p>
+                <p class="recommendations">Recommendation: ${finding.recommendation}</p>
             </div>
         `;
     }).join('');
