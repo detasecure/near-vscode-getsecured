@@ -8,25 +8,39 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
     // Get the active text editor
     const editor = vscode.window.activeTextEditor;
 
+    const accountId = await getFromContext(localWorkspace, 'accountId') || "";
+    // vscode.window.showInformationMessage("Account ID - " + accountId);
+
+    if(!accountId?.length) {
+        vscode.window.showErrorMessage('No logged-in account found.');
+        return;
+    }
+
+
     if (editor) {
+
         // Get the document text
         const document = editor.document;
         const sourceCode = document.getText();
 
+        // Get the document relative file path
+        const filePath = getFilePath(accountId, document.fileName)
+        // vscode.window.showInformationMessage("FILE NAME - " + filePath);
+
         // Show loading message while scanning
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
-            title: "Scanning code...",
+            title: "Scanning " + filePath,
             cancellable: false
         }, async (progress) => {
             try {
-                const response = await axios.post('http://localhost:8080/scan_code', {
-                    source_code: sourceCode
+                const serverURL = await getFromContext(localWorkspace, 'GETSecuredURL') || "http://localhost:8080/scan_code";
+                // vscode.window.showInformationMessage("serverURL - " + serverURL);
+                const response = await axios.post(serverURL, {
+                    source_code: sourceCode,
+                    file_name: filePath,
+                    account_id: accountId
                 });
-
-                // const response = await axios.post('http://3.108.126.225:8080/scan_code', {
-                //     source_code: sourceCode
-                // });
 
                 
                 // Display the response in a new window
@@ -55,10 +69,20 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
             }
         });
     } else {
-        vscode.window.showErrorMessage('No active editor found.');
+        vscode.window.showErrorMessage('Click on the source code window and put the cursor to start the scan.');
     }
 };
 
+function getFilePath(accountId: string, fileName: string): string {
+    const index = fileName.indexOf(accountId);
+    if (index !== -1) {
+        const pathAfterAccountId = fileName.substring(index + accountId.length);
+        return pathAfterAccountId
+        // const pathParts = pathAfterAccountId.split('/');
+        // return pathParts[pathParts.length - 1];
+    }
+    return '';
+}
 
 function generateReportHTML(findings: any) {
 

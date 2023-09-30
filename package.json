@@ -89,7 +89,7 @@
       },
       {
         "view": "near-discovery",
-        "contents": "[Scan Code](command:near.scan_code)",
+        "contents": "[Scan Code by GETSecured.ai](command:near.scan_code)",
         "when": "BOS.enabled"
       },
       {
@@ -164,6 +164,7 @@
     "axios": "^1.5.0",
     "lodash": "^4.17.21",
     "near-api-js": "^1.1.0",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "vsce": "^2.15.0"
   }
 }
