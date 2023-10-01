@@ -5,6 +5,7 @@ import { addToContext, getFromContext } from '../extension';
 import axios from 'axios';
 
 export const scanCode = async (context: vscode.ExtensionContext, localWorkspace: string) => {
+
     // Get the active text editor
     const editor = vscode.window.activeTextEditor;
 
@@ -34,6 +35,9 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
             cancellable: false
         }, async (progress) => {
             try {
+                // Set the scanInProgress context key to true
+                vscode.commands.executeCommand('setContext', 'scanInProgress', true);
+
                 const serverURL = await getFromContext(localWorkspace, 'GETSecuredURL') || "http://localhost:8080/scan_code";
                 // vscode.window.showInformationMessage("serverURL - " + serverURL);
                 const response = await axios.post(serverURL, {
@@ -69,6 +73,9 @@ export const scanCode = async (context: vscode.ExtensionContext, localWorkspace:
 
             } catch (error) {
                 vscode.window.showErrorMessage(`Error scanning code: ${error}`);
+            } finally {
+                // Set the scanInProgress context key to false
+                vscode.commands.executeCommand('setContext', 'scanInProgress', false);
             }
         });
     } else {

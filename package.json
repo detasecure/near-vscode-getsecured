@@ -90,7 +90,12 @@
       {
         "view": "near-discovery",
         "contents": "[Scan Code by GETSecured.ai](command:near.scan_code)",
-        "when": "BOS.enabled"
+        "when": "BOS.enabled && !scanInProgress"
+      },
+      {
+        "view": "near-discovery",
+        "contents": "[Scanning...]",
+        "when": "BOS.enabled && scanInProgress"
       },
       {
         "view": "near-discovery",
