@@ -96,10 +96,18 @@ function getFilePath(accountId: string, fileName: string): string {
 
 function generateReportHTML(findings: any) {
 
+
     // Check for the specific condition
     if (findings.length === 1 && findings[0].issueDescription === "No issue found!") {
         return `<h1>${findings[0].issueDescription}</h1>`;
     }
+
+    const priorityCounts = countIssuePriorities(findings);
+    let summaryHtml = '<h2>Summary</h2><ul>';
+    for (const priority in priorityCounts) {
+        summaryHtml += `<li>${priority}: ${priorityCounts[priority]}</li>`;
+    }
+    summaryHtml += '</ul>';
 
 
     let findingsTable = `
@@ -175,7 +183,7 @@ function generateReportHTML(findings: any) {
                 </table>
             `;
 
-  return findingsTable;
+  return summaryHtml + findingsTable;
 }
 
 function generateReportHTMLVersion2(findings: any) {
@@ -185,6 +193,12 @@ function generateReportHTMLVersion2(findings: any) {
         return `<h1>${findings[0].issueDescription}</h1>`;
     }
     
+    const priorityCounts = countIssuePriorities(findings);
+    let summaryHtml = '<h2>Summary</h2><ul>';
+    for (const priority in priorityCounts) {
+        summaryHtml += `<li>${priority}: ${priorityCounts[priority]}</li>`;
+    }
+    summaryHtml += '</ul>';
 
     // Generate styled HTML for findings
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -268,6 +282,19 @@ function generateReportHTMLVersion2(findings: any) {
                 </html>
             `;
 
-    return findingsTable;
+    return summaryHtml + findingsTable;
 }
 
+function countIssuePriorities(findings: any) {
+    const counts: { [key: string]: number } = {};
+
+    findings.forEach((finding: any) => {
+        if (counts[finding.issuePriority]) {
+            counts[finding.issuePriority]++;
+        } else {
+            counts[finding.issuePriority] = 1;
+        }
+    });
+
+    return counts;
+}
